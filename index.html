@@ -46,17 +46,17 @@
         }
         .tab-item.active { background: var(--sr-card); color: var(--sr-orange); box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
 
-        /* 內容區域高度優化 */
+        /* 修正捲動問題：padding-bottom 增加至 160px 避開紅色區域 */
         .content-scroll { 
-            padding: 70px 15px 140px; 
+            padding: 70px 15px 160px; 
             overflow-y: auto; flex: 1;
+            -webkit-overflow-scrolling: touch;
         }
 
         .top-ctrl-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .mini-timer-inline { font-weight: bold; font-size: 0.9rem; color: var(--sr-orange); background: var(--sr-card); padding: 6px 12px; border-radius: 10px; }
         .reset-btn { background: var(--sr-orange); color: #fff; border: none; padding: 6px 16px; border-radius: 12px; font-weight: bold; font-size: 0.8rem; }
 
-        /* 壽司碟兩行佈局 */
         .sushi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 10px; }
         .sushi-grid.second-row { grid-template-columns: repeat(2, 1fr); padding: 0 15%; }
 
@@ -89,16 +89,15 @@
         .list-container { background: var(--sr-card); border-radius: 15px; padding: 12px; margin-top: 5px; }
         .list-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f5f5f5; font-weight: bold; font-size: 0.8rem; }
 
-        /* 修正底部比例同走位 */
         .footer-fixed {
             position: fixed; bottom: 0; left: 0; width: 100%;
             background: var(--sr-orange); 
-            padding: 10px 20px 25px; /* 縮減內邊距 */
+            padding: 10px 20px 25px;
             border-radius: 20px 20px 0 0;
             display: flex; justify-content: space-between; align-items: center; 
             z-index: 2000; color: #fff;
             box-sizing: border-box;
-            height: 90px; /* 固定高度防止走位 */
+            height: 90px;
         }
         .total-info { display: flex; flex-direction: column; }
         .grand-total-label { font-size: 0.7rem; font-weight: bold; opacity: 0.9; margin: 0; }
@@ -110,15 +109,17 @@
             min-width: 60px;
         }
 
-        /* 修正時鐘置中 */
+        /* 修正時鐘置中：扣除頂部 60px 與底部 90px 的正中央 */
         .page-timer { 
+            padding-top: 60px; /* 頂部導航高度 */
+            padding-bottom: 90px; /* 底部紅色高度 */
             display: flex;
             flex-direction: column;
             align-items: center; 
-            justify-content: center; /* 垂直置中 */
-            text-align: center;
+            justify-content: center;
+            flex: 1;
             background: #fff;
-            padding-bottom: 80px; /* 抵銷底部 Footer 空間感 */
+            box-sizing: border-box;
         }
         .timer-val { font-size: 5rem; font-weight: bold; color: var(--sr-orange); margin: 10px 0 30px; }
         .timer-btn-large { background: var(--sr-orange); border: none; padding: 15px 60px; border-radius: 30px; font-weight: bold; font-size: 1.1rem; color: #fff; }

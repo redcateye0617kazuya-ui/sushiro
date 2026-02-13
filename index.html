@@ -46,8 +46,9 @@
         }
         .tab-item.active { background: var(--sr-card); color: var(--sr-orange); box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
 
+        /* 內容區域高度優化 */
         .content-scroll { 
-            padding: 70px 15px 180px; 
+            padding: 70px 15px 140px; 
             overflow-y: auto; flex: 1;
         }
 
@@ -55,26 +56,13 @@
         .mini-timer-inline { font-weight: bold; font-size: 0.9rem; color: var(--sr-orange); background: var(--sr-card); padding: 6px 12px; border-radius: 10px; }
         .reset-btn { background: var(--sr-orange); color: #fff; border: none; padding: 6px 16px; border-radius: 12px; font-weight: bold; font-size: 0.8rem; }
 
-        /* 兩行展示佈局 (固定不滾動) */
-        .sushi-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr); /* 第一行三個 */
-            gap: 10px;
-            margin-bottom: 10px;
-        }
-        .sushi-grid.second-row {
-            grid-template-columns: repeat(2, 1fr); /* 第二行兩個 */
-            padding: 0 15%; /* 讓底行居中 */
-        }
+        /* 壽司碟兩行佈局 */
+        .sushi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 10px; }
+        .sushi-grid.second-row { grid-template-columns: repeat(2, 1fr); padding: 0 15%; }
 
-        .sushi-card { 
-            background: transparent; 
-            display: flex; flex-direction: column; align-items: center; 
-            padding: 5px 0;
-        }
-        
+        .sushi-card { background: transparent; display: flex; flex-direction: column; align-items: center; padding: 5px 0; }
         .sushi-icon { 
-            width: 65px; height: 65px; border-radius: 50%;
+            width: 60px; height: 60px; border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
             margin-bottom: 5px; position: relative; cursor: pointer;
             background: #fff; box-shadow: 0 3px 8px rgba(0,0,0,0.08);
@@ -101,18 +89,38 @@
         .list-container { background: var(--sr-card); border-radius: 15px; padding: 12px; margin-top: 5px; }
         .list-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f5f5f5; font-weight: bold; font-size: 0.8rem; }
 
+        /* 修正底部比例同走位 */
         .footer-fixed {
             position: fixed; bottom: 0; left: 0; width: 100%;
-            background: var(--sr-orange); padding: 12px 25px 35px;
-            border-radius: 25px 25px 0 0;
-            display: flex; justify-content: space-between; align-items: center; z-index: 2000; color: #fff;
+            background: var(--sr-orange); 
+            padding: 10px 20px 25px; /* 縮減內邊距 */
+            border-radius: 20px 20px 0 0;
+            display: flex; justify-content: space-between; align-items: center; 
+            z-index: 2000; color: #fff;
+            box-sizing: border-box;
+            height: 90px; /* 固定高度防止走位 */
         }
-        .grand-total-label { font-size: 0.75rem; font-weight: bold; opacity: 0.9; }
-        .grand-total { font-size: 2.2rem; font-weight: bold; line-height: 1; margin-top: 2px; } 
-        .items-pill { background: #fff; color: var(--sr-orange); padding: 8px 18px; border-radius: 18px; text-align: center; font-weight: bold; }
+        .total-info { display: flex; flex-direction: column; }
+        .grand-total-label { font-size: 0.7rem; font-weight: bold; opacity: 0.9; margin: 0; }
+        .grand-total { font-size: 1.8rem; font-weight: bold; line-height: 1; margin: 2px 0 0; } 
+        .items-pill { 
+            background: #fff; color: var(--sr-orange); 
+            padding: 5px 15px; border-radius: 15px; 
+            text-align: center; font-weight: bold;
+            min-width: 60px;
+        }
 
-        .page-timer { align-items: center; justify-content: center; background: #fff; }
-        .timer-val { font-size: 5.5rem; font-weight: bold; color: var(--sr-orange); margin-bottom: 20px; }
+        /* 修正時鐘置中 */
+        .page-timer { 
+            display: flex;
+            flex-direction: column;
+            align-items: center; 
+            justify-content: center; /* 垂直置中 */
+            text-align: center;
+            background: #fff;
+            padding-bottom: 80px; /* 抵銷底部 Footer 空間感 */
+        }
+        .timer-val { font-size: 5rem; font-weight: bold; color: var(--sr-orange); margin: 10px 0 30px; }
         .timer-btn-large { background: var(--sr-orange); border: none; padding: 15px 60px; border-radius: 30px; font-weight: bold; font-size: 1.1rem; color: #fff; }
     </style>
 </head>
@@ -187,13 +195,13 @@
     </div>
 
     <div class="footer-fixed">
-        <div>
-            <div class="grand-total-label">總金額 (含加一)</div>
-            <div class="grand-total">$<span id="total">0</span></div>
+        <div class="total-info">
+            <p class="grand-total-label">總金額 (含加一)</p>
+            <p class="grand-total">$<span id="total">0</span></p>
         </div>
         <div class="items-pill">
-            <span id="qty" style="font-size:1.4rem; display:block; line-height:1;">0</span>
-            <span style="font-size:0.6rem;">ITEMS</span>
+            <span id="qty" style="font-size:1.2rem; display:block; line-height:1.1;">0</span>
+            <span style="font-size:0.55rem;">ITEM</span>
         </div>
     </div>
 

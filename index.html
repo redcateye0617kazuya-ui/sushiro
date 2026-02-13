@@ -10,7 +10,7 @@
             --sr-bg: #EAEAEA;    
             --sr-card: #FFFFFF;  
             --sr-text: #4A4A4A;  
-            --footer-h: 100px;
+            --footer-h: 85px; /* 下調 Footer 高度，令其再低少少 */
         }
 
         body, html { 
@@ -51,12 +51,11 @@
         }
         .tab-item.active { background: var(--sr-card); color: var(--sr-orange); box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
 
-        /* 清單頁面捲動修正 */
         .content-scroll { 
             margin-top: 60px;
             height: calc(100% - 60px); 
             overflow-y: auto; 
-            padding: 10px 15px 180px; /* 大幅增加底部墊高，確保清單不被遮擋 */
+            padding: 10px 15px 140px; /* 配合 Footer 下調，減少底墊 */
             box-sizing: border-box;
             -webkit-overflow-scrolling: touch;
             overscroll-behavior-y: contain;
@@ -66,7 +65,6 @@
         .mini-timer-inline { font-weight: bold; font-size: 0.9rem; color: var(--sr-orange); background: var(--sr-card); padding: 6px 12px; border-radius: 10px; }
         .reset-btn { background: var(--sr-orange); color: #fff; border: none; padding: 6px 16px; border-radius: 12px; font-weight: bold; font-size: 0.8rem; }
 
-        /* 壽司碟兩行佈局 */
         .sushi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 10px; }
         .sushi-grid.second-row { grid-template-columns: repeat(2, 1fr); padding: 0 15%; }
 
@@ -99,22 +97,21 @@
         .list-container { background: var(--sr-card); border-radius: 15px; padding: 12px; margin-top: 5px; }
         .list-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f5f5f5; font-weight: bold; font-size: 0.8rem; }
 
-        /* 底部固定欄 */
+        /* 修正 Footer：使其再低少少，並處理 iOS 安全區域 */
         .footer-fixed {
             position: fixed; bottom: 0; left: 0; width: 100%;
             background: var(--sr-orange); 
-            padding: 10px 25px calc(15px + env(safe-area-inset-bottom));
-            border-radius: 20px 20px 0 0;
+            padding: 8px 25px calc(5px + env(safe-area-inset-bottom)); 
+            border-radius: 18px 18px 0 0;
             display: flex; justify-content: space-between; align-items: center; 
             z-index: 3000; color: #fff;
             box-sizing: border-box;
             height: var(--footer-h);
         }
-        .grand-total-label { font-size: 0.7rem; font-weight: bold; opacity: 0.9; margin: 0; }
-        .grand-total { font-size: 1.8rem; font-weight: bold; line-height: 1; margin: 2px 0 0; } 
-        .items-pill { background: #fff; color: var(--sr-orange); padding: 6px 15px; border-radius: 15px; text-align: center; font-weight: bold; }
+        .grand-total-label { font-size: 0.65rem; font-weight: bold; opacity: 0.9; margin: 0; }
+        .grand-total { font-size: 1.7rem; font-weight: bold; line-height: 1; margin: 2px 0 0; } 
+        .items-pill { background: #fff; color: var(--sr-orange); padding: 4px 12px; border-radius: 12px; text-align: center; font-weight: bold; }
 
-        /* 時鐘頁面：修正頂部露邊界 */
         .page-timer { 
             width: 100%;
             height: 100%;
@@ -124,7 +121,7 @@
             align-items: center; 
             justify-content: center;
             box-sizing: border-box;
-            padding-bottom: var(--footer-h); /* 讓時鐘在紅色區塊以上的空間置中 */
+            padding-bottom: var(--footer-h);
         }
         .timer-val { font-size: 5rem; font-weight: bold; color: var(--sr-orange); margin: 10px 0 30px; }
         .timer-btn-large { background: var(--sr-orange); border: none; padding: 15px 60px; border-radius: 30px; font-weight: bold; font-size: 1.1rem; color: #fff; }
@@ -208,15 +205,14 @@
             <p class="grand-total">$<span id="total">0</span></p>
         </div>
         <div class="items-pill">
-            <span id="qty" style="font-size:1.2rem; display:block; line-height:1.1;">0</span>
-            <span style="font-size:0.55rem;">ITEM</span>
+            <span id="qty" style="font-size:1.1rem; display:block; line-height:1.1;">0</span>
+            <span style="font-size:0.5rem;">ITEM</span>
         </div>
     </div>
 
     <script>
         const slider = document.getElementById('slider');
         function jumpTo(i) { slider.scrollTo({ left: i * window.innerWidth, behavior: 'smooth' }); }
-        
         slider.addEventListener('scroll', () => {
             const idx = Math.round(slider.scrollLeft / window.innerWidth);
             document.getElementById('tab0').classList.toggle('active', idx === 0);

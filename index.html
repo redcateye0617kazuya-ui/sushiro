@@ -10,39 +10,31 @@
             --sr-bg: #EAEAEA;    
             --sr-card: #FFFFFF;  
             --sr-text: #4A4A4A;  
-            --footer-h: 100px; /* 固定 Footer 高度供計算 */
+            --footer-h: 100px;
         }
 
         body, html { 
             margin: 0; padding: 0; height: 100%; width: 100%;
             font-family: -apple-system, "PingFang HK", sans-serif;
             background-color: var(--sr-bg); color: var(--sr-text); 
-            overflow: hidden; /* 防止 Body 捲動 */
+            overflow: hidden;
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* 修正雙頁重疊問題 */
         #slider {
-            display: flex; 
-            width: 100vw; 
-            height: 100vh;
-            overflow-x: auto; 
-            scroll-snap-type: x mandatory;
+            display: flex; width: 100vw; height: 100%;
+            overflow-x: auto; scroll-snap-type: x mandatory;
             scroll-behavior: smooth;
-            -webkit-overflow-scrolling: touch; /* iOS 順滑捲動 */
+            -webkit-overflow-scrolling: touch;
         }
         #slider::-webkit-scrollbar { display: none; }
 
         .page {
-            flex: 0 0 100vw; /* 核心修正：確保每頁佔滿且不收縮 */
-            width: 100vw; 
-            height: 100vh;
-            scroll-snap-align: start; 
-            box-sizing: border-box;
-            display: flex; 
-            flex-direction: column;
-            position: relative;
-            overflow: hidden;
+            flex: 0 0 100vw; width: 100vw; height: 100%;
+            scroll-snap-align: start; box-sizing: border-box;
+            display: flex; flex-direction: column;
+            position: relative; overflow: hidden;
+            background-color: var(--sr-bg);
         }
 
         .tabs-nav {
@@ -56,24 +48,25 @@
         .tab-item { 
             flex: 1; padding: 8px 0; text-align: center; border-radius: 22px;
             font-weight: bold; font-size: 0.85rem; cursor: pointer; color: #777;
-            transition: 0.3s;
         }
         .tab-item.active { background: var(--sr-card); color: var(--sr-orange); box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
 
-        /* 修正 Scroll Down 擋住問題：確保 Scroll 區域扣除 Footer */
+        /* 清單頁面捲動修正 */
         .content-scroll { 
             margin-top: 60px;
-            height: calc(100vh - 60px - var(--footer-h)); 
+            height: calc(100% - 60px); 
             overflow-y: auto; 
-            padding: 10px 15px 40px; /* 增加底部緩衝空間 */
+            padding: 10px 15px 180px; /* 大幅增加底部墊高，確保清單不被遮擋 */
             box-sizing: border-box;
             -webkit-overflow-scrolling: touch;
+            overscroll-behavior-y: contain;
         }
 
         .top-ctrl-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .mini-timer-inline { font-weight: bold; font-size: 0.9rem; color: var(--sr-orange); background: var(--sr-card); padding: 6px 12px; border-radius: 10px; }
         .reset-btn { background: var(--sr-orange); color: #fff; border: none; padding: 6px 16px; border-radius: 12px; font-weight: bold; font-size: 0.8rem; }
 
+        /* 壽司碟兩行佈局 */
         .sushi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 10px; }
         .sushi-grid.second-row { grid-template-columns: repeat(2, 1fr); padding: 0 15%; }
 
@@ -106,11 +99,11 @@
         .list-container { background: var(--sr-card); border-radius: 15px; padding: 12px; margin-top: 5px; }
         .list-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f5f5f5; font-weight: bold; font-size: 0.8rem; }
 
-        /* 修正底部內容走位與高度佔比 */
+        /* 底部固定欄 */
         .footer-fixed {
             position: fixed; bottom: 0; left: 0; width: 100%;
             background: var(--sr-orange); 
-            padding: 10px 25px calc(10px + env(safe-area-inset-bottom)); /* 支援 iOS Home Bar */
+            padding: 10px 25px calc(15px + env(safe-area-inset-bottom));
             border-radius: 20px 20px 0 0;
             display: flex; justify-content: space-between; align-items: center; 
             z-index: 3000; color: #fff;
@@ -119,21 +112,19 @@
         }
         .grand-total-label { font-size: 0.7rem; font-weight: bold; opacity: 0.9; margin: 0; }
         .grand-total { font-size: 1.8rem; font-weight: bold; line-height: 1; margin: 2px 0 0; } 
-        .items-pill { 
-            background: #fff; color: var(--sr-orange); 
-            padding: 6px 15px; border-radius: 15px; 
-            text-align: center; font-weight: bold;
-        }
+        .items-pill { background: #fff; color: var(--sr-orange); padding: 6px 15px; border-radius: 15px; text-align: center; font-weight: bold; }
 
-        /* 時鐘垂直置中修正 */
+        /* 時鐘頁面：修正頂部露邊界 */
         .page-timer { 
+            width: 100%;
+            height: 100%;
+            background: #fff;
             display: flex;
             flex-direction: column;
             align-items: center; 
             justify-content: center;
-            background: #fff;
-            height: calc(100vh - var(--footer-h)); /* 剩餘白色空間置中 */
-            margin-top: 30px; /* 稍微避開 Tab */
+            box-sizing: border-box;
+            padding-bottom: var(--footer-h); /* 讓時鐘在紅色區塊以上的空間置中 */
         }
         .timer-val { font-size: 5rem; font-weight: bold; color: var(--sr-orange); margin: 10px 0 30px; }
         .timer-btn-large { background: var(--sr-orange); border: none; padding: 15px 60px; border-radius: 30px; font-weight: bold; font-size: 1.1rem; color: #fff; }

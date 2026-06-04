@@ -219,7 +219,7 @@
 
         let plates = { white:{p:10, c:0}, red:{p:12, c:0}, silver:{p:17, c:0}, gold:{p:22, c:0}, black:{p:27, c:0} };
         let others = [];
-        const prices = [10, 12, 13, 15, 17, 18, 19, 20, 24, 22, 27, 28, 32, 33, 37, 39];
+        const prices = [6, 7, 8, 13, 15, 17, 18, 19, 20, 24, 25, 28, 32, 33, 35, 37, 39, 40, 55, 57, 68, 78, 89, 99];
         const btnBox = document.getElementById('others-btns');
         prices.forEach(p => {
             let b = document.createElement('button'); b.className = 'other-btn'; b.innerText = `$${p}`;
@@ -229,7 +229,19 @@
 
         function addP(id, n) { plates[id].c = Math.max(0, plates[id].c + n); update(); }
         function removeO(i) { others.splice(i, 1); update(); }
-
+/* 僅在尾部新增：自訂計算機金額輸入框 Function */
+        function addCustomVal() {
+            let input = prompt("請輸入自訂項目價錢 ($):");
+            if (input !== null && input.trim() !== "") {
+                let num = parseFloat(input);
+                if (!isNaN(num) && num > 0) {
+                    others.push(num);
+                    update();
+                } else {
+                    alert("請輸入正確的數字！");
+                }
+            }
+        }
         function update() {
             let s = 0, q = 0;
             for (let k in plates) { document.getElementById(k+'-c').innerText = plates[k].c; s += plates[k].c * plates[k].p; q += plates[k].c; }

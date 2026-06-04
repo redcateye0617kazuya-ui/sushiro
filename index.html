@@ -92,7 +92,11 @@
         .btn-minus { width: 26px; height: 26px; border-radius: 50%; background: var(--sr-card); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; color: var(--sr-orange); border: 1.2px solid #DDD; font-weight: bold; }
         .val { font-size: 1.2rem; font-weight: bold; color: var(--sr-text); min-width: 20px; text-align: center; }
 
-        .section-title { font-weight: bold; font-size: 0.85rem; margin: 15px 0 8px; color: #888; letter-spacing: 1px; }
+        /* 為自訂按鈕特設的標題佈局結構 */
+        .title-flex-box { display: flex; justify-content: space-between; align-items: center; margin: 15px 0 8px; }
+        .section-title { font-weight: bold; font-size: 0.85rem; color: #888; letter-spacing: 1px; margin: 0; }
+        .custom-calc-btn { background: #777; color: #fff; border: none; padding: 4px 10px; border-radius: 8px; font-weight: bold; font-size: 0.7rem; cursor: pointer; }
+
         .others-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; }
         .other-btn { background: var(--sr-card); border: 1px solid #ddd; color: var(--sr-text); border-radius: 8px; padding: 8px 0; font-weight: bold; font-size: 0.7rem; }
         
@@ -123,6 +127,38 @@
         }
         .timer-val { font-size: 5rem; font-weight: bold; color: var(--sr-orange); margin: 10px 0 30px; }
         .timer-btn-large { background: var(--sr-orange); border: none; padding: 15px 60px; border-radius: 30px; font-weight: bold; font-size: 1.1rem; color: #fff; }
+
+        /* 新增：自訂實體計數機鍵盤彈出層樣式 */
+        .calc-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); z-index: 4000;
+            display: flex; flex-direction: column; justify-content: flex-end;
+            opacity: 0; pointer-events: none; transition: opacity 0.25s ease;
+        }
+        .calc-overlay.show { opacity: 1; pointer-events: auto; }
+        .calc-container {
+            background: #FFF; width: 100%; border-radius: 20px 20px 0 0;
+            padding: 15px 20px calc(15px + env(safe-area-inset-bottom));
+            box-sizing: border-box; transform: translateY(100%); transition: transform 0.25s ease;
+        }
+        .calc-overlay.show .calc-container { transform: translateY(0); }
+        .calc-screen {
+            background: #F5F5F5; width: 100%; height: 50px; border-radius: 10px;
+            display: flex; align-items: center; justify-content: flex-end;
+            padding: 0 15px; box-sizing: border-box; font-size: 1.8rem; font-weight: bold;
+            color: var(--sr-text); margin-bottom: 15px; border: 1px solid #DDD;
+        }
+        .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+        .calc-btn {
+            background: #EAEAEA; border: none; border-radius: 12px; font-size: 1.3rem;
+            font-weight: bold; color: var(--sr-text); height: 50px; display: flex;
+            align-items: center; justify-content: center; cursor: pointer;
+        }
+        .calc-btn:active { background: #DDD; }
+        .calc-btn.orange { background: var(--sr-orange); color: #FFF; }
+        .calc-btn.orange:active { background: #D6452B; }
+        .calc-btn.gray { background: #777; color: #FFF; }
+        .calc-btn.gray:active { background: #666; }
     </style>
 </head>
 <body>
@@ -150,7 +186,7 @@
                     <button class="reset-btn" onclick="resetAll()">重設數據</button>
                 </div>
 
-                <div class="section-title">壽司碟計數</div>
+                <div class="section-title" style="margin-bottom: 8px;">壽司碟計數</div>
                 <div class="sushi-grid">
                     <div class="sushi-card">
                         <div class="card-label">白碟</div>
@@ -186,13 +222,45 @@
                     </div>
                 </div>
 
-                <div class="section-title">副食及其他項目</div>
+                <div class="title-flex-box">
+                    <div class="section-title">副食及其他項目</div>
+                    <button class="custom-calc-btn" onclick="openCalc()">+ 自訂金額</button>
+                </div>
                 <div class="others-grid" id="others-btns"></div>
 
-                <div class="section-title">已選明細</div>
+                <div class="section-title" style="margin: 15px 0 8px;">已選明細</div>
                 <div class="list-container" id="item-list">
                     <div style="color:#ccc; text-align:center; padding:5px; font-size: 0.8rem;">未有項目</div>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="calc-overlay" id="calc-modal" onclick="closeCalc(event)">
+        <div class="calc-container" onclick="event.stopPropagation()">
+            <div style="display:flex; justify-content:space-between; margin-bottom:8px; font-weight:bold; font-size:0.85rem; color:#888;">
+                <span>請輸入項目金額</span>
+                <span style="color:var(--sr-orange);" onclick="closeCalc(null)">取消</span>
+            </div>
+            <div class="calc-screen" id="calc-display">$0</div>
+            <div class="calc-grid">
+                <button class="calc-btn" onclick="pressKey('1')">1</button>
+                <button class="calc-btn" onclick="pressKey('2')">2</button>
+                <button class="calc-btn" onclick="pressKey('3')">3</button>
+                <button class="calc-btn gray" onclick="pressKey('C')">C</button>
+                
+                <button class="calc-btn" onclick="pressKey('4')">4</button>
+                <button class="calc-btn" onclick="pressKey('5')">5</button>
+                <button class="calc-btn" onclick="pressKey('6')">6</button>
+                <button class="calc-btn gray" onclick="pressKey('back')">⌫</button>
+                
+                <button class="calc-btn" onclick="pressKey('7')">7</button>
+                <button class="calc-btn" onclick="pressKey('8')">8</button>
+                <button class="calc-btn" onclick="pressKey('9')">9</button>
+                <button class="calc-btn orange" style="grid-row: span 2; height:110px;" onclick="pressKey('ok')">確認<br>加入</button>
+                
+                <button class="calc-btn" style="grid-column: span 2;" onclick="pressKey('0')">0</button>
+                <button class="calc-btn" onclick="pressKey('.')">.</button>
             </div>
         </div>
     </div>
@@ -229,19 +297,40 @@
 
         function addP(id, n) { plates[id].c = Math.max(0, plates[id].c + n); update(); }
         function removeO(i) { others.splice(i, 1); update(); }
-/* 僅在尾部新增：自訂計算機金額輸入框 Function */
-        function addCustomVal() {
-            let input = prompt("請輸入自訂項目價錢 ($):");
-            if (input !== null && input.trim() !== "") {
-                let num = parseFloat(input);
+
+        /* 新增：實體自訂計數機鍵盤的所有運作邏輯 */
+        let calcVal = "";
+        function openCalc() {
+            calcVal = "";
+            document.getElementById('calc-display').innerText = "$0";
+            document.getElementById('calc-modal').classList.add('show');
+        }
+        function closeCalc(e) {
+            if (e === null || e.target === document.getElementById('calc-modal')) {
+                document.getElementById('calc-modal').classList.remove('show');
+            }
+        }
+        function pressKey(key) {
+            const disp = document.getElementById('calc-display');
+            if (key === 'C') {
+                calcVal = "";
+            } else if (key === 'back') {
+                calcVal = calcVal.slice(0, -1);
+            } else if (key === 'ok') {
+                let num = parseFloat(calcVal);
                 if (!isNaN(num) && num > 0) {
                     others.push(num);
                     update();
-                } else {
-                    alert("請輸入正確的數字！");
+                    document.getElementById('calc-modal').classList.remove('show');
                 }
+                return;
+            } else {
+                if (key === '.' && calcVal.includes('.')) return;
+                if (calcVal.length < 8) calcVal += key;
             }
+            disp.innerText = calcVal === "" ? "$0" : "$" + calcVal;
         }
+
         function update() {
             let s = 0, q = 0;
             for (let k in plates) { document.getElementById(k+'-c').innerText = plates[k].c; s += plates[k].c * plates[k].p; q += plates[k].c; }
